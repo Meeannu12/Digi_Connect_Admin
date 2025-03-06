@@ -19,6 +19,11 @@ const Sidebar = ({ userData }) => {
       link: "/admin/allusers",
       icon: <i className="fa-solid fa-users"></i>,
     },
+    {
+      title: "Banner Images",
+      link: "/admin/banner",
+      icon: <i className="fa-solid fa-users"></i>,
+    },
   ];
 
   const userLinks = [

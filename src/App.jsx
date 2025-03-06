@@ -15,6 +15,7 @@ import Admin from "./components/Admin";
 import ListProducts from "./components/ListProducts";
 import SellerOrder from "./components/SellerOrder";
 import AllItems from "./components/AllItems.jsx";
+import BannerImages from "./components/BannerImages.jsx";
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const currency = "₹";
@@ -44,13 +45,17 @@ const App = () => {
           );
 
           if (response.data.success) {
+            // console.log("userData", response.data);
             setUserData(response.data.user);
           } else {
             toast.error(response.data.message);
             console.error("Failed to fetch user data:", response.data.message);
           }
         } catch (error) {
-          console.error("Error fetching user data:", error.response ? error.response.data.message : error.message);
+          console.error(
+            "Error fetching user data:",
+            error.response ? error.response.data.message : error.message
+          );
           toast.error("Error fetching user data");
         }
       }
@@ -112,6 +117,11 @@ const App = () => {
                 <Route
                   path="/admin/allitems"
                   element={<AllItems token={token} userData={userData} />}
+                />
+
+                <Route
+                  path="/admin/banner"
+                  element={<BannerImages token={token} userData={userData} />}
                 />
 
                 {/* Default Redirect */}
