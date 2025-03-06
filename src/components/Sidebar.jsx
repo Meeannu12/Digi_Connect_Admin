@@ -22,7 +22,12 @@ const Sidebar = ({ userData }) => {
     {
       title: "Banner Images",
       link: "/admin/banner",
-      icon: <i className="fa-solid fa-users"></i>,
+      icon: <i class="fa-solid fa-images"></i>,
+    },
+    {
+      title: "Income Level's",
+      link: "/admin/level",
+      icon: <i class="fa-solid fa-turn-up"></i>,
     },
   ];
 

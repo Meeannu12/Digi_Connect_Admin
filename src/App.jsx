@@ -16,6 +16,7 @@ import ListProducts from "./components/ListProducts";
 import SellerOrder from "./components/SellerOrder";
 import AllItems from "./components/AllItems.jsx";
 import BannerImages from "./components/BannerImages.jsx";
+import LevelIncome from "./components/LevelIncome.jsx";
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const currency = "₹";
@@ -122,6 +123,11 @@ const App = () => {
                 <Route
                   path="/admin/banner"
                   element={<BannerImages token={token} userData={userData} />}
+                />
+
+                <Route
+                  path="/admin/level"
+                  element={<LevelIncome token={token} userData={userData} />}
                 />
 
                 {/* Default Redirect */}
