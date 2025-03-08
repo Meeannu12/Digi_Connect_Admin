@@ -46,7 +46,6 @@ const App = () => {
           );
 
           if (response.data.success) {
-            // console.log("userData", response.data);
             setUserData(response.data.user);
           } else {
             toast.error(response.data.message);

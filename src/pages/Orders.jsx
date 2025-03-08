@@ -150,16 +150,12 @@ const Orders = ({ token }) => {
                       <option value={nextStatus}>{nextStatus}</option>
                     )}
                   </select>
-
-                  {/* Show delete button only if this specific order's status is "Delivered" */}
-                  {order.status === "Delivered" && (
                     <button
                       onClick={() => deleteOrder(order._id)}
                       className="p-2 text-red-600 hover:text-red-800"
                     >
                       🗑️
                     </button>
-                  )}
                 </div>
               </div>
             );

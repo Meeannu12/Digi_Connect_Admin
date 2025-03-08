@@ -89,25 +89,25 @@ const AllUsers = () => {
   };
 
   if (loading) return <p className="text-center">Loading users...</p>;
-  if (error) return <p className="text-red-500 text-center">{error}</p>;
+  if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="container mx-auto p-0">
+    <div className="container p-0 mx-auto">
       <h2 className="mb-4 text-2xl font-bold text-center">All Users</h2>
 
       {/* Desktop Table */}
       <div className="overflow-x-auto w-[100%] hidden sm:block">
-        <table className="w-full border-collapse border text-sm sm:text-base">
+        <table className="w-full text-sm border border-collapse sm:text-base">
           <thead>
             <tr className="bg-gray-200">
               <th className="px-4 py-2 border">S.No.</th>
               <th className="px-4 py-2 border">Name</th>
               <th className="px-4 py-2 border">Email</th>
               <th className="px-4 py-2 border">Role</th>
-              <th className="px-4 py-2 border hidden md:table-cell">
+              <th className="hidden px-4 py-2 border md:table-cell">
                 Location
               </th>
-              <th className="px-4 py-2 border hidden md:table-cell">
+              <th className="hidden px-4 py-2 border md:table-cell">
                 Joining Date
               </th>
               <th className="px-4 py-2 border">Actions</th>
@@ -123,23 +123,21 @@ const AllUsers = () => {
                   <select
                     value={user.role}
                     onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                    className="border rounded px-2 py-1 bg-white"
-                  >
+                    className="px-2 py-1 bg-white border rounded">
                     <option value="user">User</option>
                     <option value="admin">Admin</option>
                   </select>
                 </td>
-                <td className="px-4 py-2 border hidden md:table-cell">
+                <td className="hidden px-4 py-2 border md:table-cell">
                   {user.address?.city}, {user.address?.state}
                 </td>
-                <td className="px-4 py-2 border hidden md:table-cell">
+                <td className="hidden px-4 py-2 border md:table-cell">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-4 py-2 border">
                   <button
                     onClick={() => handleDeleteClick(user)}
-                    className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700"
-                  >
+                    className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700">
                     Delete
                   </button>
                 </td>
@@ -154,8 +152,7 @@ const AllUsers = () => {
         {users.map((user, index) => (
           <div
             key={user._id}
-            className="p-3 mb-2 w-full border rounded-md shadow-md"
-          >
+            className="w-full p-3 mb-2 border rounded-md shadow-md">
             <p>
               <strong>S.No:</strong> {index + 1}
             </p>
@@ -178,16 +175,14 @@ const AllUsers = () => {
               <select
                 value={user.role}
                 onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                className="border rounded px-2 py-1 bg-white"
-              >
+                className="px-2 py-1 bg-white border rounded">
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
               </select>
             </p>
             <button
               onClick={() => handleDeleteClick(user)}
-              className="mt-2 w-full px-6 py-2 text-white bg-red-500 rounded hover:bg-red-700"
-            >
+              className="w-full px-6 py-2 mt-2 text-white bg-red-500 rounded hover:bg-red-700">
               Delete
             </button>
           </div>
@@ -197,7 +192,7 @@ const AllUsers = () => {
       {/* Delete Confirmation Modal */}
       {showModal && selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-600 bg-opacity-50">
-          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md p-4 bg-white rounded-lg shadow-lg">
+          <div className="w-full max-w-xs p-4 bg-white rounded-lg shadow-lg sm:max-w-sm md:max-w-md">
             <h3 className="mb-4 text-xl font-semibold text-center">
               Confirm Deletion
             </h3>
@@ -208,20 +203,27 @@ const AllUsers = () => {
               <strong>Email:</strong> {selectedUser.email}
             </p>
             <p>
+              <strong>Street:</strong> {selectedUser.address?.street},{" "}
+            </p>
+            <p>
+              <strong>Zipcode:</strong> {selectedUser.address?.zipcode},{" "}
+            </p>
+            <p>
+            <p>
               <strong>Location:</strong> {selectedUser.address?.city},{" "}
+            </p>
+              <strong>State:</strong>
               {selectedUser.address?.state}
             </p>
             <div className="flex justify-between mt-4">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-6 py-2 text-gray-700 bg-gray-300 rounded hover:bg-gray-500"
-              >
+                className="px-6 py-2 text-gray-700 bg-gray-300 rounded hover:bg-gray-500">
                 Cancel
               </button>
               <button
                 onClick={handleDeleteConfirm}
-                className="px-6 py-2 text-white bg-red-500 rounded hover:bg-red-700"
-              >
+                className="px-6 py-2 text-white bg-red-500 rounded hover:bg-red-700">
                 Delete
               </button>
             </div>

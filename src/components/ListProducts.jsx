@@ -72,28 +72,28 @@ const ListProducts = ({ token, userData }) => {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Your Products</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div className="container p-4 mx-auto">
+      <h2 className="mb-4 text-2xl font-bold">Your Products</h2>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {products.map((product) => (
           <div
             key={product._id}
-            className="border rounded-lg shadow-md overflow-hidden"
+            className="overflow-hidden border rounded-lg shadow-md"
           >
             {/* Product Image */}
             <img
               src={product.image[0]}
               alt={product.name}
-              className="w-full h-48 object-cover"
+              className="object-cover w-full h-48"
             />
 
             {/* Product Details */}
             <div className="p-4">
-              <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
-              <p className="text-gray-600 mb-2">
+              <h3 className="mb-2 text-xl font-semibold">{product.name}</h3>
+              <p className="mb-2 text-gray-600">
                 {product.description.substring(0, 100)}...
               </p>
-              <div className="flex justify-between items-center mb-2">
+              <div className="flex items-center justify-between mb-2">
                 <span className="text-lg font-bold">
                   {currency}
                   {product.price}
@@ -111,13 +111,16 @@ const ListProducts = ({ token, userData }) => {
                 <p className="text-sm text-gray-600">
                   Colors: {product.color.join(", ")}
                 </p>
+                <p className="text-sm text-gray-600">
+                  Cc: {product.cc}🪙
+                </p>
               </div>
 
               {/* Actions */}
               <div className="flex justify-end gap-2 mt-4">
                 <button
                   onClick={() => handleDelete(product._id)}
-                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                  className="px-4 py-2 text-white transition-colors bg-red-500 rounded hover:bg-red-600"
                 >
                   Delete
                 </button>
