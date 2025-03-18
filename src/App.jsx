@@ -10,13 +10,14 @@ import Login from "./components/Login";
 import AllUsers from "./pages/AllUsers";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import User from "./components/User";
-import Admin from "./components/Admin";
-import ListProducts from "./components/ListProducts";
-import SellerOrder from "./components/SellerOrder";
+import User from "./components/User.jsx";
+import Admin from "./components/Admin.jsx";
+import ListProducts from "./components/ListProducts.jsx";
+import SellerOrder from "./components/SellerOrder.jsx";
 import AllItems from "./components/AllItems.jsx";
 import BannerImages from "./components/BannerImages.jsx";
 import LevelIncome from "./components/LevelIncome.jsx";
+// import Loader from "./components/lo";
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const currency = "₹";
@@ -46,7 +47,6 @@ const App = () => {
           );
 
           if (response.data.success) {
-            // console.log("userData", response.data);
             setUserData(response.data.user);
           } else {
             toast.error(response.data.message);
@@ -88,7 +88,7 @@ const App = () => {
                     userData ? (
                       <Add token={token} userData={userData} />
                     ) : (
-                      <p>loading</p>
+                      "Loding...." // <Loader />
                     )
                   }
                 />

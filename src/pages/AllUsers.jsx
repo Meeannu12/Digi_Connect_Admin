@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { backendUrl } from "../App";
+import { toast } from "react-toastify";
+// import Loader from "../components/Loader";
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -32,7 +34,7 @@ const AllUsers = () => {
   const handleRoleChange = async (userId, newRole) => {
     try {
       const token = localStorage.getItem("token");
-  
+
       const response = await axios.put(
         `${backendUrl}/api/user/updateRole`,
         { userId, role: newRole },
@@ -43,7 +45,7 @@ const AllUsers = () => {
           },
         }
       );
-  
+
       if (response.data.success) {
         setUsers((prevUsers) =>
           prevUsers.map((user) =>
@@ -57,57 +59,97 @@ const AllUsers = () => {
       console.error("Error updating role:", err.response?.data || err);
     }
   };
-  
+
+  const updateBlockedStatus = async (userId, status) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `${backendUrl}/api/user/updateBlocked`,
+        { userId, status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.success) {
+        // ✅ Update the state immediately to reflect the change
+        setUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user._id === userId ? { ...user, blocked: status } : user
+          )
+        );
+
+        toast.success(`User ${status ? "Blocked" : "Unblocked"} Successfully`);
+      } else {
+        toast.error("Failed to update status");
+      }
+    } catch (error) {
+      console.error("Error updating user status:", error);
+      toast.error("Something went wrong. Try again!");
+    }
+  };
 
   const handleDeleteClick = (user) => {
     setSelectedUser(user);
     setShowModal(true);
   };
 
-  const handleDeleteConfirm = async () => {
+  const handlePriceChange = async (userId, price) => {
+    let updatedPrice = price.trim() === "" ? 0 : Number(price); // Ensure empty input is set to 0
+
+    // Update state immediately for instant feedback
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user._id === userId ? { ...user, pricetopay: updatedPrice } : user
+      )
+    );
+
     try {
       const token = localStorage.getItem("token");
-
-      const response = await axios.delete(
-        `${backendUrl}/api/user/deleteuser/`,
+      const response = await axios.put(
+        `${backendUrl}/api/user/updatePrice`,
+        { userId, price: updatedPrice },
         {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          data: { id: selectedUser._id }, // ✅ Sending ID in body
         }
       );
 
       if (response.data.success) {
-        setUsers(users.filter((user) => user._id !== selectedUser._id));
-        setShowModal(false);
+        toast.success("Price updated successfully");
+      } else {
+        toast.error("Failed to update price");
       }
-    } catch (err) {
-      console.error("Error deleting user:", err);
+    } catch (error) {
+      console.error("Error updating user price:", error);
+      toast.error("Something went wrong. Try again!");
     }
   };
 
-  if (loading) return <p className="text-center">Loading users...</p>;
-  if (error) return <p className="text-red-500 text-center">{error}</p>;
+  if (loading) return "Loding....";
+  if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <div className="container mx-auto p-0">
+    <div className="container p-0 mx-auto">
       <h2 className="mb-4 text-2xl font-bold text-center">All Users</h2>
 
       {/* Desktop Table */}
       <div className="overflow-x-auto w-[100%] hidden sm:block">
-        <table className="w-full border-collapse border text-sm sm:text-base">
+        <table className="w-full text-sm border border-collapse sm:text-base">
           <thead>
             <tr className="bg-gray-200">
               <th className="px-4 py-2 border">S.No.</th>
               <th className="px-4 py-2 border">Name</th>
               <th className="px-4 py-2 border">Email</th>
               <th className="px-4 py-2 border">Role</th>
-              <th className="px-4 py-2 border hidden md:table-cell">
-                Location
-              </th>
-              <th className="px-4 py-2 border hidden md:table-cell">
+              <th className="px-4 py-2 border">Blocked</th>
+              <th className="px-4 py-2 border">Price To Pay</th>
+              <th className="hidden px-4 py-2 border md:table-cell">
                 Joining Date
               </th>
               <th className="px-4 py-2 border">Actions</th>
@@ -123,16 +165,36 @@ const AllUsers = () => {
                   <select
                     value={user.role}
                     onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                    className="border rounded px-2 py-1 bg-white"
+                    className="px-2 py-1 bg-white border rounded"
                   >
                     <option value="user">User</option>
                     <option value="admin">Admin</option>
                   </select>
                 </td>
-                <td className="px-4 py-2 border hidden md:table-cell">
-                  {user.address?.city}, {user.address?.state}
+                <td className="hidden px-4 py-2 border md:table-cell">
+                  <select
+                    value={user?.blocked ? "true" : "false"}
+                    onChange={(e) =>
+                      updateBlockedStatus(user._id, e.target.value === "true")
+                    }
+                    className="px-2 py-1 border rounded"
+                  >
+                    <option value="true">Blocked</option>
+                    <option value="false">Unblocked</option>
+                  </select>
                 </td>
-                <td className="px-4 py-2 border hidden md:table-cell">
+                <td className="px-4 py-2 border">
+                  <input
+                    type="number"
+                    className="w-[100px] px-2 border"
+                    value={user?.pricetopay ?? ""}
+                    onChange={(e) =>
+                      handlePriceChange(user._id, e.target.value)
+                    }
+                    placeholder="0"
+                  />
+                </td>
+                <td className="hidden px-4 py-2 border md:table-cell">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-4 py-2 border">
@@ -140,7 +202,7 @@ const AllUsers = () => {
                     onClick={() => handleDeleteClick(user)}
                     className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-700"
                   >
-                    Delete
+                    Details
                   </button>
                 </td>
               </tr>
@@ -154,7 +216,7 @@ const AllUsers = () => {
         {users.map((user, index) => (
           <div
             key={user._id}
-            className="p-3 mb-2 w-full border rounded-md shadow-md"
+            className="w-full p-3 mb-2 border rounded-md shadow-md"
           >
             <p>
               <strong>S.No:</strong> {index + 1}
@@ -164,6 +226,29 @@ const AllUsers = () => {
             </p>
             <p>
               <strong>Email:</strong> {user.email}
+            </p>
+            <p className="">
+              <strong>State:</strong>
+              <select
+                value={user?.blocked ? "true" : "false"}
+                onChange={(e) =>
+                  updateBlockedStatus(user._id, e.target.value === "true")
+                }
+                className=""
+              >
+                <option value="true">Blocked</option>
+                <option value="false">Unblocked</option>
+              </select>
+            </p>
+            <p className="">
+              <strong>Pricetopay</strong>
+              <input
+                type="number"
+                className="w-[100px] px-2 border"
+                value={user?.pricetopay ?? ""}
+                onChange={(e) => handlePriceChange(user._id, e.target.value)}
+                placeholder="0"
+              />
             </p>
             <p>
               <strong>Location:</strong> {user.address?.city},{" "}
@@ -178,7 +263,7 @@ const AllUsers = () => {
               <select
                 value={user.role}
                 onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                className="border rounded px-2 py-1 bg-white"
+                className="px-2 py-1 bg-white border rounded"
               >
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
@@ -186,9 +271,9 @@ const AllUsers = () => {
             </p>
             <button
               onClick={() => handleDeleteClick(user)}
-              className="mt-2 w-full px-6 py-2 text-white bg-red-500 rounded hover:bg-red-700"
+              className="w-full px-6 py-2 mt-2 text-white bg-red-500 rounded hover:bg-red-700"
             >
-              Delete
+              Details
             </button>
           </div>
         ))}
@@ -197,10 +282,8 @@ const AllUsers = () => {
       {/* Delete Confirmation Modal */}
       {showModal && selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-600 bg-opacity-50">
-          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md p-4 bg-white rounded-lg shadow-lg">
-            <h3 className="mb-4 text-xl font-semibold text-center">
-              Confirm Deletion
-            </h3>
+          <div className="w-full max-w-xs p-4 bg-white rounded-lg shadow-lg sm:max-w-sm md:max-w-md">
+            <h3 className="mb-4 text-xl font-semibold text-center">Details</h3>
             <p>
               <strong>Name:</strong> {selectedUser.name}
             </p>
@@ -208,8 +291,22 @@ const AllUsers = () => {
               <strong>Email:</strong> {selectedUser.email}
             </p>
             <p>
+              <strong>Street:</strong> {selectedUser.address?.street},{" "}
+            </p>
+            <p>
+              <strong>Uid:</strong> {selectedUser.uid},{" "}
+            </p>
+            <p>
+              <strong>Option:</strong> {selectedUser.option},{" "}
+            </p>
+
+            <p>
               <strong>Location:</strong> {selectedUser.address?.city},{" "}
+              <strong>State:</strong>
               {selectedUser.address?.state}
+            </p>
+            <p>
+              <strong>Zipcode:</strong> {selectedUser.address?.zipcode},{" "}
             </p>
             <div className="flex justify-between mt-4">
               <button
@@ -217,12 +314,6 @@ const AllUsers = () => {
                 className="px-6 py-2 text-gray-700 bg-gray-300 rounded hover:bg-gray-500"
               >
                 Cancel
-              </button>
-              <button
-                onClick={handleDeleteConfirm}
-                className="px-6 py-2 text-white bg-red-500 rounded hover:bg-red-700"
-              >
-                Delete
               </button>
             </div>
           </div>

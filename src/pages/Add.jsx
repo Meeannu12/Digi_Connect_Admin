@@ -3,12 +3,14 @@ import { assets } from "../assets/assets";
 import axios from "axios";
 import { backendUrl } from "../App";
 import { toast } from "react-toastify";
+// import Loader from "../components/Loader";
 
 const Add = ({ token, userData }) => {
   const [image1, setImage1] = useState(null);
   const [image2, setImage2] = useState(null);
   const [image3, setImage3] = useState(null);
   const [image4, setImage4] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -17,8 +19,10 @@ const Add = ({ token, userData }) => {
   const [customCategory, setCustomCategory] = useState("");
   const [subCategory, setSubCategory] = useState("20k");
   const [customSubCategory, setCustomSubCategory] = useState("");
-  const [bestseller, setBestseller] = useState("");
+  const [bestseller, setBestseller] = useState(false);
   const [sizes, setSizes] = useState([]);
+  const [cc, setcc] = useState("");
+  const [show, setShow] = useState(false);
 
   // For Phone/Laptop specific details
   const [color, setColor] = useState([]);
@@ -35,6 +39,7 @@ const Add = ({ token, userData }) => {
   }, [token]);
 
   const onSubmitHandler = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
     if (!token) {
@@ -48,28 +53,28 @@ const Add = ({ token, userData }) => {
       formData.append("name", name);
       formData.append("description", description);
       formData.append("price", price);
-      formData.append(
-        "category",
-        category === "Other" ? customCategory : category
-      );
-      formData.append(
-        "subCategory",
-        subCategory === "Other" ? customSubCategory : subCategory
-      );
+
+      const cate = category === "Other" ? customCategory : category;
+
+      formData.append("category", cate);
+      const sub = subCategory === "Other" ? customSubCategory : subCategory;
+
+      formData.append("subCategory", sub);
       formData.append("bestseller", bestseller);
       formData.append(
         "sizes",
         JSON.stringify(sizes.length > 0 ? sizes : ["Default"])
       );
 
+      formData.append("cc", cc);
       if (category === "Phone" || category === "Laptop") {
-        formData.append(
-          "color",
-          JSON.stringify(Array.isArray(color) ? color : [color])
-        );
         formData.append("ram", ram);
         formData.append("rom", rom);
       }
+      formData.append(
+        "color",
+        JSON.stringify(Array.isArray(color) ? color : [color])
+      );
 
       // Adding image files
       image1 && formData.append("image1", image1);
@@ -83,7 +88,7 @@ const Add = ({ token, userData }) => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            // Don't set Content-Type with FormData, axios will set it automatically
+            "Content-Type": "multipart/form-data",
           },
         }
       );
@@ -109,9 +114,11 @@ const Add = ({ token, userData }) => {
         setColor([]);
         setRam("");
         setRom("");
+        setcc("");
         setCustomColor("");
         setSizes([]);
         setBestseller(false);
+        setLoading(false);
       } else {
         toast.error(response.data.message);
       }
@@ -126,23 +133,20 @@ const Add = ({ token, userData }) => {
     setImage(file);
   };
 
+  console.log(userData.blocked);
   // Show loading state while waiting for userData
   if (!userData) {
-    return (
-      <>
-        <p>Loading user data...</p>
-      </>
-    );
+    return <>"Loader....."</>;
   }
 
   if (userData.role === "user") {
-    return (
+    return !userData?.blocked ? (
       <form
         onSubmit={onSubmitHandler}
-        className="flex flex-col sm:pl-2 pl-0 items-start w-full gap-3"
+        className="flex flex-col items-start w-full gap-3 pl-0 sm:pl-2"
       >
         <div>
-          <p className="text-xl mb-2">Upload Image</p>
+          <p className="mb-2 text-xl">Upload Image</p>
           <div className="flex gap-2">
             {/* Image Inputs */}
             {[image1, image2, image3, image4].map((image, index) => (
@@ -166,7 +170,7 @@ const Add = ({ token, userData }) => {
         </div>
 
         <div className="w-full">
-          <p className="text-xl mb-2">Product name</p>
+          <p className="mb-2 text-xl">Product name</p>
           <input
             onChange={(e) => setName(e.target.value)}
             value={name}
@@ -178,7 +182,7 @@ const Add = ({ token, userData }) => {
         </div>
 
         <div className="w-full">
-          <p className="text-xl mb-2">Product description</p>
+          <p className="mb-2 text-xl">Product description</p>
           <textarea
             onChange={(e) => setDescription(e.target.value)}
             value={description}
@@ -190,7 +194,7 @@ const Add = ({ token, userData }) => {
 
         <div className="flex flex-col w-full gap-2 sm:flex-row sm:gap-8">
           <div>
-            <p className="text-xl mb-2">Product category</p>
+            <p className="mb-2 text-xl">Product category</p>
             <select
               onChange={(e) => setCategory(e.target.value)}
               className="w-full px-3 py-2"
@@ -213,7 +217,7 @@ const Add = ({ token, userData }) => {
           </div>
 
           <div>
-            <p className="text-xl mb-2">Sub category</p>
+            <p className="mb-2 text-xl">Sub category</p>
             <select
               onChange={(e) => setSubCategory(e.target.value)}
               className="w-full px-3 py-2"
@@ -237,7 +241,7 @@ const Add = ({ token, userData }) => {
           </div>
 
           <div>
-            <p className="text-xl mb-2">Product Price</p>
+            <p className="mb-2 text-xl">Product Price</p>
             <input
               onChange={(e) => setPrice(e.target.value)}
               value={price}
@@ -246,10 +250,20 @@ const Add = ({ token, userData }) => {
               placeholder="25"
             />
           </div>
+          <div>
+            <p className="mb-2 text-xl">Product cc</p>
+            <input
+              onChange={(e) => setcc(e.target.value)}
+              value={cc}
+              className="w-full px-3 py-2 sm:w-[120px]"
+              type="number"
+              placeholder="5"
+            />
+          </div>
         </div>
 
         <div>
-          <p className="text-xl mb-2">Select Colors</p>
+          <p className="mb-2 text-xl">Select Colors</p>
           <div className="flex flex-wrap gap-3">
             {/* Predefined color options */}
             {["Black", "White", "Blue", "Red"].map((clr) => (
@@ -318,52 +332,6 @@ const Add = ({ token, userData }) => {
           </div>
         </div>
 
-        <div>
-          <p className="text-xl mb-2">Product Variant (RAM/ROM)</p>
-          <div className="flex gap-3">
-            {/* Predefined sizes (4GB/64GB, 6GB/64GB, etc.) */}
-            {["4/64", "6/64", "8/128", "12/256"].map((variant) => (
-              <div
-                key={variant}
-                onClick={() =>
-                  setSizes((prev) =>
-                    prev.includes(variant)
-                      ? prev.filter((item) => item !== variant)
-                      : [...prev, variant]
-                  )
-                }
-              >
-                <p
-                  className={`${
-                    sizes.includes(variant)
-                      ? "bg-pink-100 border-pink-500"
-                      : "bg-slate-200"
-                  } px-3 py-1 cursor-pointer border rounded`}
-                >
-                  {variant}
-                </p>
-              </div>
-            ))}
-
-            {/* Option for custom RAM/ROM */}
-            <div>
-              <input
-                type="text"
-                placeholder="Type default if no size"
-                className="px-3 py-1"
-                value={customVariant}
-                onChange={(e) => setCustomVariant(e.target.value)}
-                onBlur={() => {
-                  if (customVariant) {
-                    setSizes((prev) => [...prev, customVariant]);
-                    setCustomVariant(""); // Reset custom input after adding
-                  }
-                }}
-              />
-            </div>
-          </div>
-        </div>
-
         <div className="flex gap-2 mt-2">
           <input
             onChange={() => setBestseller((prev) => !prev)}
@@ -376,10 +344,52 @@ const Add = ({ token, userData }) => {
           </label>
         </div>
 
-        <button type="submit" className="py-3 mt-4 text-white bg-black w-28">
-          ADD
+        <button
+          type="submit"
+          className="py-3 mt-4 text-white bg-black w-28"
+          disabled={loading}
+        >
+          {loading ? "Loading..." : "ADD"}
         </button>
       </form>
+    ) : (
+      <div className="flex items-center justify-center h-[80vh]">
+        <div className="flex flex-col items-center p-6 bg-red-100 border border-red-300 rounded-lg shadow-lg">
+          <svg
+            className="w-16 h-16 text-red-500"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+          </svg>
+          <h1 className="mt-4 text-2xl font-semibold text-red-600">
+            Access Denied
+          </h1>
+          <p className="mt-2 text-gray-700">
+            Your account has been blocked. Please contact support for
+            assistance.
+          </p>
+          <button
+            className="px-4 py-2 mt-4 text-white bg-red-500 rounded-lg hover:bg-red-600"
+            onClick={() => setShow(true)}
+          >
+            Contact Support
+          </button>
+          {show && (
+            <p
+              onClick={() => {
+                navigator.clipboard.writeText("9462365447");
+                setShow(false);
+                toast.success("Phone number copied to clipboard");
+              }}
+              className="mt-3 text-xl text-red-500 transition cursor-pointer hover:text-red-700"
+            >
+              9462365447
+            </p>
+          )}
+        </div>
+      </div>
     );
   }
 };

@@ -5,40 +5,45 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const Login = ({ setToken }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate(); // Use useNavigate for redirection
+  const [uid, setUid] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const onSubmitHandler = async (e) => {
-    e.preventDefault();
+  const handleAuthSuccess = (data) => {
+    setToken(data.token); // Store the token
+    localStorage.setItem("token", data.token); // Save it for persistence
+  };
 
+
+  const onSubmitHandler = async (event) => {
+    event.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post(`${backendUrl}/api/user/admin`, {
-        email,
+        uid,
         password,
       });
-
-      if (response.data.success) {
-        setToken(response.data.token); // Store token in state/localStorage if needed
-        localStorage.setItem("token", response.data.token); // Store token in localStorage if needed
-
-        // Redirect based on user role (only "admin" and "user" allowed)
-        if (response.data.user.role === "admin") {
-          navigate("/admin/dashboard");
-        } else if (response.data.user.role === "user") {
-          navigate("/user/add");
-        } else {
-          navigate("/error")
-        }
+      handleAuthSuccess(response.data);
+      
+      // Redirect based on user role (only "admin" and "user" allowed)
+      if (response.data.user.role === "admin") {
+        navigate("/admin/dashboard");
+      } else if (response.data.user.role === "user") {
+        navigate("/user/add");
       } else {
-        toast.error(response.data.message);
+        navigate("/error")
       }
     } catch (error) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "Login failed. Try again.");
+      toast.error(error.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
+      setUid("");
+      setPassword("");
     }
   };
 
+  
   return (
     <div className="flex items-center justify-center w-full min-h-screen">
       <div className="max-w-md px-8 py-6 bg-white rounded-lg shadow-md">
@@ -46,14 +51,14 @@ const Login = ({ setToken }) => {
         <form onSubmit={onSubmitHandler}>
           <div className="mb-3 min-w-72">
             <p className="mb-2 text-sm font-medium text-gray-700">
-              Email Address
+              Your Uid
             </p>
             <input
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
+              onChange={(e) => setUid(e.target.value)}
+              value={uid}
               className="w-full px-3 py-2 border border-gray-300 rounded-md outline-none"
-              type="email"
-              placeholder="your@email.com"
+              type="text"
+              placeholder="Your Uid"
               required
             />
           </div>

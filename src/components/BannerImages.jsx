@@ -12,8 +12,6 @@ const BannerImages = ({ token, userData }) => {
   useEffect(() => {
     if (!userData?._id) return;
 
-    // console.log(token, userData, backendUrl);
-
     const fetchProducts = async () => {
       try {
         const response = await axios.get(`${backendUrl}/api/banner`, {
@@ -89,8 +87,6 @@ const BannerImages = ({ token, userData }) => {
         }
       );
 
-      // fetchProducts();
-      // console.log("Upload successful:", response.data);
       alert("Image uploaded successfully!");
 
       setUploadShowModel(false); // Close modal after upload
@@ -103,13 +99,13 @@ const BannerImages = ({ token, userData }) => {
     }
   };
   return (
-    <div className="container mx-auto p-0">
+    <div className="container p-0 mx-auto">
       <div className="flex justify-around">
         <h2 className="mb-4 text-2xl font-bold text-center">All Banner</h2>
         <h2 className="mb-4 text-2xl font-bold text-center">
           <button
             onClick={() => setUploadShowModel(true)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+            className="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-700"
           >
             Add Banner
           </button>
@@ -118,7 +114,7 @@ const BannerImages = ({ token, userData }) => {
 
       {/* Desktop Table */}
       <div className="overflow-x-auto w-[100%] hidden sm:block">
-        <table className="w-full border-collapse border text-sm sm:text-base">
+        <table className="w-full text-sm border border-collapse sm:text-base">
           <thead>
             <tr className="bg-gray-200">
               <th className="px-4 py-2 border">S.No.</th>
@@ -130,7 +126,7 @@ const BannerImages = ({ token, userData }) => {
             {image.map((user, index) => (
               <tr key={user._id} className="text-center">
                 <td className="px-4 py-2 border">{index + 1}</td>
-                <td className="px-4 py-2 border text-center">
+                <td className="px-4 py-2 text-center border">
                   <img
                     src={user.image}
                     alt="Uploaded"
@@ -157,7 +153,7 @@ const BannerImages = ({ token, userData }) => {
         {image.map((user, index) => (
           <div
             key={user._id}
-            className="p-3 mb-2 w-full border rounded-md shadow-md"
+            className="w-full p-3 mb-2 border rounded-md shadow-md"
           >
             <p>
               <strong>S.No:</strong> {index + 1}
@@ -181,7 +177,7 @@ const BannerImages = ({ token, userData }) => {
               <select
                 value={user.role}
                 onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                className="border rounded px-2 py-1 bg-white"
+                className="px-2 py-1 bg-white border rounded"
               >
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
@@ -189,7 +185,7 @@ const BannerImages = ({ token, userData }) => {
             </p>
             <button
               onClick={() => handleDeleteClick(user)}
-              className="mt-2 w-full px-6 py-2 text-white bg-red-500 rounded hover:bg-red-700"
+              className="w-full px-6 py-2 mt-2 text-white bg-red-500 rounded hover:bg-red-700"
             >
               Delete
             </button>
@@ -200,7 +196,7 @@ const BannerImages = ({ token, userData }) => {
       {/* Delete Confirmation Modal */}
       {showModal && selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-600 bg-opacity-50">
-          <div className="w-full max-w-xs sm:max-w-sm md:max-w-md p-4 bg-white rounded-lg shadow-lg">
+          <div className="w-full max-w-xs p-4 bg-white rounded-lg shadow-lg sm:max-w-sm md:max-w-md">
             <h3 className="mb-4 text-xl font-semibold text-center">
               Confirm Delete
             </h3>
@@ -236,7 +232,7 @@ const BannerImages = ({ token, userData }) => {
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              className="w-full border p-2 rounded mb-4"
+              className="w-full p-2 mb-4 border rounded"
             />
 
             {/* Buttons */}
