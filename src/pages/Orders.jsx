@@ -217,6 +217,7 @@ const Orders = ({ token }) => {
                   </p>
                 )}
 
+<<<<<<< HEAD
                 {/* Order Items */}
                 <h5 className="mt-4 font-medium">🛒 Items:</h5>
                 <ul>
@@ -262,6 +263,26 @@ const Orders = ({ token }) => {
                   className="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-700">
                   Delete Order
                 </button>
+=======
+                <div className="flex items-center gap-2">
+                  <select
+                    onChange={(event) => statusHandler(event, order._id)}
+                    className="p-2 font-semibold"
+                    value={order.status}
+                  >
+                    <option value={order.status}>{order.status}</option>
+                    {nextStatus && (
+                      <option value={nextStatus}>{nextStatus}</option>
+                    )}
+                  </select>
+                    <button
+                      onClick={() => deleteOrder(order._id)}
+                      className="p-2 text-red-600 hover:text-red-800"
+                    >
+                      🗑️
+                    </button>
+                </div>
+>>>>>>> 3cb56b71ee13b48fba165cf1723853e41f942e4a
               </div>
             );
           })}

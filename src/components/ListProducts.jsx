@@ -109,7 +109,13 @@ const ListProducts = ({ token, userData }) => {
                 <p className="text-sm text-gray-600">
                   Colors: {product.color.join(", ")}
                 </p>
+<<<<<<< HEAD
                 <p className="text-sm text-gray-600">Cc: {product.cc}🪙</p>
+=======
+                <p className="text-sm text-gray-600">
+                  Cc: {product.cc}🪙
+                </p>
+>>>>>>> 3cb56b71ee13b48fba165cf1723853e41f942e4a
               </div>
 
               {/* Actions */}
