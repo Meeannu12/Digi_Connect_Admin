@@ -22,7 +22,7 @@ const Add = ({ token, userData }) => {
   const [bestseller, setBestseller] = useState(false);
   const [sizes, setSizes] = useState([]);
   const [cc, setcc] = useState("");
-  const [show, setShow] = useState(false);
+  const [show , setShow] = useState(false);
 
   // For Phone/Laptop specific details
   const [color, setColor] = useState([]);
@@ -96,6 +96,7 @@ const Add = ({ token, userData }) => {
       if (response.data.success) {
         toast.success(response.data.message);
 
+
         // Updating userData.products
         if (userData && userData.products) {
           const newProduct = response.data.product; // Assuming backend returns the newly added product
@@ -133,18 +134,21 @@ const Add = ({ token, userData }) => {
     setImage(file);
   };
 
-  console.log(userData.blocked);
+  console.log(userData.blocked)
   // Show loading state while waiting for userData
   if (!userData) {
-    return <>"Loader....."</>;
+    return (
+      <>
+        "Loader....."
+      </>
+    );
   }
 
   if (userData.role === "user") {
     return !userData?.blocked ? (
       <form
         onSubmit={onSubmitHandler}
-        className="flex flex-col items-start w-full gap-3 pl-0 sm:pl-2"
-      >
+        className="flex flex-col items-start w-full gap-3 pl-0 sm:pl-2">
         <div>
           <p className="mb-2 text-xl">Upload Image</p>
           <div className="flex gap-2">
@@ -197,8 +201,7 @@ const Add = ({ token, userData }) => {
             <p className="mb-2 text-xl">Product category</p>
             <select
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-3 py-2"
-            >
+              className="w-full px-3 py-2">
               <option value="Phone">Smart Phone</option>
               <option value="Laptop">Laptop</option>
               <option value="Camera">Camera</option>
@@ -220,8 +223,7 @@ const Add = ({ token, userData }) => {
             <p className="mb-2 text-xl">Sub category</p>
             <select
               onChange={(e) => setSubCategory(e.target.value)}
-              className="w-full px-3 py-2"
-            >
+              className="w-full px-3 py-2">
               <option value="20k">Under 20000</option>
               <option value="35k">Under 35000</option>
               <option value="40k">Under 40000</option>
@@ -280,8 +282,7 @@ const Add = ({ token, userData }) => {
                   color.includes(clr)
                     ? "bg-pink-100 border-pink-500"
                     : "bg-slate-200"
-                }`}
-              >
+                }`}>
                 {clr}
               </div>
             ))}
@@ -295,8 +296,7 @@ const Add = ({ token, userData }) => {
                   onClick={() =>
                     setColor((prev) => prev.filter((c) => c !== clr))
                   }
-                  className="px-3 py-1 bg-green-200 border rounded cursor-pointer"
-                >
+                  className="px-3 py-1 bg-green-200 border rounded cursor-pointer">
                   {clr}
                 </div>
               ))}
@@ -324,8 +324,7 @@ const Add = ({ token, userData }) => {
                     setCustomColor(""); // Clear input after adding
                   }
                 }}
-                className="px-3 py-1 text-white bg-blue-500 rounded"
-              >
+                className="px-3 py-1 text-white bg-blue-500 rounded">
                 Add
               </button>
             </div>
@@ -347,8 +346,7 @@ const Add = ({ token, userData }) => {
         <button
           type="submit"
           className="py-3 mt-4 text-white bg-black w-28"
-          disabled={loading}
-        >
+          disabled={loading}>
           {loading ? "Loading..." : "ADD"}
         </button>
       </form>
@@ -359,8 +357,7 @@ const Add = ({ token, userData }) => {
             className="w-16 h-16 text-red-500"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            fill="currentColor"
-          >
+            fill="currentColor">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
           </svg>
           <h1 className="mt-4 text-2xl font-semibold text-red-600">
@@ -372,19 +369,17 @@ const Add = ({ token, userData }) => {
           </p>
           <button
             className="px-4 py-2 mt-4 text-white bg-red-500 rounded-lg hover:bg-red-600"
-            onClick={() => setShow(true)}
-          >
+            onClick={() => setShow(true)}>
             Contact Support
           </button>
           {show && (
             <p
               onClick={() => {
                 navigator.clipboard.writeText("9462365447");
-                setShow(false);
+                setShow(false); 
                 toast.success("Phone number copied to clipboard");
               }}
-              className="mt-3 text-xl text-red-500 transition cursor-pointer hover:text-red-700"
-            >
+              className="mt-3 text-xl text-red-500 transition cursor-pointer hover:text-red-700">
               9462365447
             </p>
           )}
@@ -392,6 +387,8 @@ const Add = ({ token, userData }) => {
       </div>
     );
   }
+
+  
 };
 
 export default Add;

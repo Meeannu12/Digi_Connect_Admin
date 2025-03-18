@@ -17,7 +17,7 @@ import SellerOrder from "./components/SellerOrder.jsx";
 import AllItems from "./components/AllItems.jsx";
 import BannerImages from "./components/BannerImages.jsx";
 import LevelIncome from "./components/LevelIncome.jsx";
-// import Loader from "./components/lo";
+// import Loader from "./components/Loader.jsx";
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
 export const currency = "₹";
@@ -88,7 +88,7 @@ const App = () => {
                     userData ? (
                       <Add token={token} userData={userData} />
                     ) : (
-                      "Loding...." // <Loader />
+                      "Loader....."
                     )
                   }
                 />

@@ -105,14 +105,11 @@ const SellerOrder = ({ userData, token }) => {
   return (
     <div className="p-4">
       <h3 className="mb-4 text-xl font-bold">Seller Orders</h3>
-<<<<<<< HEAD
       <h3 className="mb-4 text-md font-bold">Your Current Cc: <span className="text-gray-600">{userData?.cc}🪙</span></h3>
       {userData?.level ==='' &&(
         <h3 className="mb-4 text-md font-bold">Your Current Level: <span className="text-gray-600">{userData?.level}</span></h3>
       )}
 
-=======
->>>>>>> 3cb56b71ee13b48fba165cf1723853e41f942e4a
       {!orders || orders.length === 0 ? (
         <p className="text-gray-500">No orders yet.</p>
       ) : (
